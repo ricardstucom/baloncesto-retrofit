@@ -37,7 +37,7 @@ public class RestSynchronous {
                     "GET all players: " + playerList);
         } else {
             System.out.println("Status code: " + response.code() +
-                    "Message error: " + response.message());
+                    "Message error: " + response.errorBody());
         }
 
         /**
@@ -50,6 +50,73 @@ public class RestSynchronous {
             System.out.println("Status code: " + response.code() +
                     " Message error: " + response.raw() );
         }
+
+        /**
+         * Ejemplo de POST Player
+         */
+        Player player = new Player();
+        player.setName("John");
+        player.setSurname("Doe");
+        player.setPoints(50);
+        Call<Player> callPlayer = playerService.createPlayer(player);
+        Response<Player> responsePlayer= callPlayer.execute();
+
+        if(responsePlayer.isSuccessful()) {
+            Player playerResp = responsePlayer.body();
+            System.out.println("Status code: " + responsePlayer.code() + System.lineSeparator() +
+                    "POST player: " + playerResp);
+
+
+            /**
+             * Ejemplo de PUT player
+             * Vamos a actualizar el Player que acabamos de crear usando
+             * la response.
+             */
+            playerResp.setPoints(100);
+            callPlayer = playerService.updatePlayer(playerResp);
+            responsePlayer= callPlayer.execute();
+
+            System.out.println("Status code: " + responsePlayer.code() + System.lineSeparator() +
+                    "PUT player: " + responsePlayer.body());
+
+            /**
+             * Ejemplo de DELETE player
+             */
+            Call<Void> callDelete= playerService.deletePlayer(playerResp.getId());
+            Response<Void> responseDelete= callDelete.execute();
+
+            System.out.println("DELETE status code: " + responseDelete.code());
+
+            /**
+             * GET All para comprobar si se ha eliminado
+             */
+            call = playerService.getAllPlayer();
+            response= call.execute();
+            System.out.println("Comprobación del delete " +
+                    "Status code: " + response.code() + System.lineSeparator() +
+                    "GET players: " + response.body());
+
+
+
+
+        } else {
+            System.out.println("Status code: " + responsePlayer.code() +
+                    "Message error: " + responsePlayer.errorBody());
+        }
+
+        /**
+         * Ejemplo GET de un jugador
+         */
+        callPlayer = playerService.getPlayer(1L);
+        responsePlayer = callPlayer.execute();
+
+        if(responsePlayer.isSuccessful()) {
+            System.out.println("GET ONE->Status code: " + responsePlayer.code() +
+                    " Player: " + responsePlayer.body() );
+        }
+
+
+
 
 
     }

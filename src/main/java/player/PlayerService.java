@@ -10,6 +10,9 @@ public interface PlayerService {
     @GET("/players")
     Call<List<Player>> getAllPlayer();
 
+    @GET("/players/{id}")
+    Call<Player> getPlayer(@Path("id") Long id);
+
     @GET("/playersError")
     Call<List<Player>> getError();
 
